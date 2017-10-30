@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\UserAddress;
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -51,6 +53,15 @@ class RegisterController extends Controller
             'login' => 'required|string|min:4|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'zip' => 'required|string',
+            'country' => 'required|string|min:2|max:2',
+            'city' => 'required|string',
+            'street' => 'required|string',
+            'house_number' => 'required|string',
+            'extra_information' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'gender' => 'required|string',
         ]);
     }
 
@@ -62,10 +73,28 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'login' => $data['login'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        $user = new User();
+        DB::transaction(function () use ($data){
+            $user = User::create([
+                'login' => $data['login'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+            ]);
+
+            UserAddress::create([
+                'user_id' => $user->id,
+                'zip' => $data['zip'],
+                'country' => strtoupper($data['country']),
+                'city' => $data['city'],
+                'street' => $data['street'],
+                'house_number' => $data['house_number'],
+                'extra_information' => $data['extra_information'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'gender' => $data['gender']
+            ]);
+        });
+
+        return $user;
     }
 }
