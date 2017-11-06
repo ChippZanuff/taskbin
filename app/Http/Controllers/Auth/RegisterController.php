@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\UserAddress;
-use App\User;
+use App\Models\UserAddresses;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -69,7 +69,7 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\Models\User
      */
     protected function create(array $data)
     {
@@ -81,7 +81,7 @@ class RegisterController extends Controller
                 'password' => bcrypt($data['password']),
             ]);
 
-            UserAddress::create([
+            UserAddresses::create([
                 'user_id' => $user->id,
                 'zip' => $data['zip'],
                 'country' => strtoupper($data['country']),

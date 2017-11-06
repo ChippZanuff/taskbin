@@ -19,6 +19,7 @@ class CreateUserAddressesTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('gender');
+            $table->string('billing');
             $table->string('zip');
             $table->string('country');
             $table->string('city');
@@ -29,7 +30,7 @@ class CreateUserAddressesTable extends Migration
         });
 
         Schema::table('user_addresses', function(Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
